@@ -1,4 +1,5 @@
 const Users= require("../model/userModel");
+const Otp= require("../model/otp");
 const CatchAsync = require("../utills/catcAsync");
 const jwt=require('jsonwebtoken')
 const AppError = require("./../utills/appError");
@@ -64,7 +65,7 @@ const mailOptions = {
   text: `Your OTP is ${otp}`
 };
 // Send the email with the OTP
-transporter.sendMail(mailOptions, function(error, info){
+transporter.sendMail(mailOptions,async function(error, info){
   if (error) {
     res.status(200).json({
       statuc:'Error',
@@ -72,6 +73,10 @@ transporter.sendMail(mailOptions, function(error, info){
     })
   } else {
     console.log('Email sent: ' + info.response);
+     await Otp.create({
+      email:req.body.email,
+      Otp:otp
+    })
     res.status(200).json({
       statuc:'Success',
       message:'Otp sent to your Email'

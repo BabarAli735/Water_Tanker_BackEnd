@@ -1,7 +1,11 @@
 const express = require("express");
 const morgan = require("morgan");
+const cors=require('cors')
 const app = express();
 //1 MIDDELE_WARE
+app.use(cors({
+  origin:'http://127.0.0.1:3000'
+}))
 app.use(express.json());
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));

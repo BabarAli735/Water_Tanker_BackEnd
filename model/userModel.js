@@ -13,7 +13,19 @@ const userSchema= new mongoose.Schema({
         lowercase:true,
         validate:[validator.isEmail,'Please Provie a valid Email']
     },
+    location:{
+        type:String,
+        require:[true,'Please add Location'],
+    },
     photo:String,
+    lat:{
+        type:Number,
+        require:[true,'Please add Latitude'],
+    },
+    long:{
+        type:Number,
+        require:[true,'Please add Longitude'],
+    },
     type:{
         type:String,
         require:[true,'Please mention User Type'],
