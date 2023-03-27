@@ -13,7 +13,9 @@ mongoose.connect(DB, {
 }).then(con=>console.log('DB Connecting Sccessfully '))
 
 const port =process.env.PORT|| 3000
-
+app.get('/',(req,res)=>{
+  res.send('Hellow world')
+})
 //4 SERVER
 app.listen(port, () => {
   console.log("appp runing",port);
