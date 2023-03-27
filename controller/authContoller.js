@@ -84,6 +84,19 @@ transporter.sendMail(mailOptions,async function(error, info){
   }
 });
 })
+exports.VarifyOtp = CatchAsync(async (req, res,next) => {
+  const {email,otp}=req.body
+  const VarifyOtp = await Otp.findOne({ email })
+  console.log(otp);
+  if(otp==VarifyOtp.Otp){
+    res.status(200).json({
+      statuc:'Success',
+      message:'Email Varification Completed'
+    })
+  }else{
+    next(new AppError('Invalid Otp', 401));
+  }
+})
 
 exports.protect = CatchAsync(async (req, res, next) => {
     // 1) Getting token and check of it's there
