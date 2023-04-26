@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "585348357772",
+    "project_id": "watertanker-56174",
+    "storage_bucket": "watertanker-56174.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:585348357772:android:6e83a19d22af819bdce5a9",
+        "android_client_info": {
+          "package_name": "com.water_tanker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "585348357772-jos64pn8i9uk10g9st1ic7cbl3flkpdn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANdlgdYqku9oKiM00U4VQ9DexW6otVpls"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "585348357772-jos64pn8i9uk10g9st1ic7cbl3flkpdn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

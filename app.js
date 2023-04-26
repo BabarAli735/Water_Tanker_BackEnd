@@ -16,9 +16,11 @@ app.use(express.static(`${__dirname}/public`));
 
 //3 Routers
 const userRouter = require("./routes/userRouters");
+const orderRouter = require("./routes/orderRouter");
 const globalErrorHandler = require("./controller/errorController");
 
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/order", orderRouter);
 app.use("/", (req,res)=>{
   res.send('Hellow world')
 })

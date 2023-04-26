@@ -16,6 +16,14 @@ exports.getUser = (req, res) => {
     message: "This route is not yet define",
   });
 };
+exports.getAllDrivers = CatchAsync(async (req, res) => {
+  const users = await Users.find({ type: "Driver" });
+  res.status(200).json({
+    status: "Success",
+    results: users.length,
+    users,
+  });
+});
 exports.createUser = (req, res) => {
   res.status(500).json({
     status: "error",
