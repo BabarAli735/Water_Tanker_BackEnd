@@ -3,6 +3,7 @@ const Users = require("../model/userModel");
 const Order = require("../model/order");
 const Fcm = require("../model/fcm");
 const { admin } = require("../firebase-config");
+const { ObjectId } = require("mongodb");
 exports.createOrder = CatchAsync(async (req, res) => {
   const notification_options = {
     priority: "high",
@@ -12,7 +13,7 @@ exports.createOrder = CatchAsync(async (req, res) => {
   const user = await Users.findOne({ _id: userId });
   const driver = await Users.findOne({ _id: driverId });
   const fcm = await Fcm.findOne({ driverId: driverId });
-   Order.create({
+  Order.create({
     user: user,
     driver: driver,
     from: from,
@@ -21,43 +22,44 @@ exports.createOrder = CatchAsync(async (req, res) => {
     discount: 300,
     total: 1800,
     orderStatus: "pending",
-  }).then(async resp=>{
-     const message = {
-    notification: {
-      title: "Order",
-      body: "Order Notification",
-    },
-    data: {
-      orderData: resp._id.toString(),
-    },
-  };
-  const options = notification_options;
+  })
+    .then(async (resp) => {
+      const message = {
+        notification: {
+          title: "Order",
+          body: "Order Notification",
+        },
+        data: {
+          orderData: resp._id.toString(),
+        },
+      };
+      const options = notification_options;
 
- await  admin
-    .messaging()
-    .sendToDevice(fcm.fcmToken, message, options)
-    .then((response) => {
-      console.log("response", response);
-      res.status(201).json({
-        status: "Success",
-        Order: resp,
-      });
+      await admin
+        .messaging()
+        .sendToDevice(fcm.fcmToken, message, options)
+        .then((response) => {
+          console.log("response", response);
+          res.status(201).json({
+            status: "Success",
+            Order: resp,
+          });
+        })
+        .catch((error) => {
+          console.log("error", error);
+        });
     })
     .catch((error) => {
-      console.log("error", error);
+      console.log("Post Order Error", error);
     });
-  }).catch(error=>{
-    console.log('Post Order Error',error);
-  })
-  console.log('driverId',driverId);
-
+  console.log("driverId", driverId);
 });
 exports.updateOrderStatus = async (req, res) => {
   console.log(req.body.status);
   try {
     const orderdata = await Order.findOne({ _id: req.body.id });
     const fcm = await Fcm.findOne({ driverId: orderdata.user._id });
-    console.log('fcm===',fcm);
+    console.log("fcm===", fcm);
     const notification_options = {
       priority: "high",
       timeToLive: 60 * 60 * 24,
@@ -139,11 +141,32 @@ exports.updateOrderStatus = async (req, res) => {
   }
 };
 exports.getOrder = CatchAsync(async (req, res) => {
-  console.log('req.params.id', );
-  const id=req.query.id
-  const OrderData = await Order.findOne({_id:id});
+  console.log("req.params.id");
+  const id = req.query.id;
+  const OrderData = await Order.findOne({ _id: id });
   res.status(200).json({
     status: "Success",
     OrderData,
   });
+});
+exports.getMyOrder = CatchAsync(async (req, res) => {
+  const id = req.query.id;
+  const type = req.query.type;
+  
+  if (type === "User"){
+    const OrderData = await Order.find({"user._id": new ObjectId(id)});
+    res.status(200).json({
+      status: "Success",
+      OrderData,
+    });
+  }
+  else {
+    const OrderData = await Order.find({"driver._id": new ObjectId(id)});
+    res.status(200).json({
+      status: "Success",
+      OrderData,
+    });
+  }
+  console.log("req.params.id",id);
+
 });

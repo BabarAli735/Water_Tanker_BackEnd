@@ -63,7 +63,7 @@ exports.sendOpt = CatchAsync(async (req, res, next) => {
     service: "gmail",
     auth: {
       user: "babar.mobile.developer124@gmail.com",
-      pass: "kgfiobvgrnkjlnuv",
+      pass: "wudkknmcjjsrtybr",
     },
   });
   // Generate a random OTP
