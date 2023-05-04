@@ -1,7 +1,9 @@
 const CatchAsync = require("../utills/catcAsync");
 const Users = require("../model/userModel");
 const Order = require("../model/order");
+const pure_water_order = require("../model/pure_water_order");
 const Fcm = require("../model/fcm");
+const nodemailer = require("nodemailer");
 const { admin } = require("../firebase-config");
 const { ObjectId } = require("mongodb");
 exports.createOrder = CatchAsync(async (req, res) => {
@@ -152,21 +154,70 @@ exports.getOrder = CatchAsync(async (req, res) => {
 exports.getMyOrder = CatchAsync(async (req, res) => {
   const id = req.query.id;
   const type = req.query.type;
-  
-  if (type === "User"){
-    const OrderData = await Order.find({"user._id": new ObjectId(id)});
-    res.status(200).json({
-      status: "Success",
-      OrderData,
-    });
-  }
-  else {
-    const OrderData = await Order.find({"driver._id": new ObjectId(id)});
-    res.status(200).json({
-      status: "Success",
-      OrderData,
-    });
-  }
-  console.log("req.params.id",id);
 
+  if (type === "User") {
+    const OrderData = await Order.find({ "user._id": new ObjectId(id) });
+    res.status(200).json({
+      status: "Success",
+      OrderData,
+    });
+  } else {
+    const OrderData = await Order.find({ "driver._id": new ObjectId(id) });
+    res.status(200).json({
+      status: "Success",
+      OrderData,
+    });
+  }
+  console.log("req.params.id", id);
+});
+exports.createPureWaterOrder = CatchAsync(async (req, res) => {
+  const notification_options = {
+    priority: "high",
+    timeToLive: 60 * 60 * 24,
+  };
+  const { userId } = req.body;
+  const user = await Users.findOne({ _id: userId });
+  const fcm = await Fcm.findOne({ driverId: userId });
+  pure_water_order
+    .create(req.body)
+    .then(async (resp) => {
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "babar.mobile.developer124@gmail.com",
+          pass: "wudkknmcjjsrtybr",
+        },
+      });
+
+      // Set up email data
+      const mailOptions = {
+        from: "babar.mobile.developer124@gmail.com",
+        to: req.body.email,
+        subject: "Order",
+        text: `Your Pure water Request has been recieved :\n
+        OrderId: ${resp._id}\n
+        Name: ${resp.name}\n
+        address: ${resp.address}\n
+        Quantity: ${resp.quantity}\n
+        company: ${resp.company}\n
+        `,
+      };
+      // Send the email with the OTP
+      transporter.sendMail(mailOptions, async function (error, info) {
+        if (error) {
+          res.status(404).json({
+            statuc: "Error",
+            message: error,
+          });
+        } else {
+          res.status(200).json({
+            status: "Success",
+            orderData: resp,
+          });
+        }
+      });
+    })
+    .catch((error) => {
+      console.log("Post Pure Order Error", error);
+    });
 });
