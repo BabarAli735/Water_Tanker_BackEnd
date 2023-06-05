@@ -6,6 +6,9 @@ const userSchema= new mongoose.Schema({
         type:String,
         require:[true,'Please tell us Your Name']
     },
+    number:{
+        type:String,
+    },
     email:{
         type:String,
         require:[true,'Please Provide Your Email'],

@@ -25,7 +25,8 @@ exports.EditProfile = CatchAsync(async (req, res) => {
       });
       return
     }
-    const filepath =await files.image[0].path;
+    console.log('files?.Image[0]',files.Image[0].path);
+    const filepath =await files?.Image[0]?.path;
     const ImageFileName = filepath.slice(filepath.lastIndexOf("\\") + 1);
     const imageUrl = IMAGE_BASE_URL + ImageFileName;
     try {
